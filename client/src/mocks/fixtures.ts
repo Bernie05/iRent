@@ -1,0 +1,1345 @@
+/**
+ * Mock seed data. Beds, rates and personas follow DESIGN.md → Sample content and scenarios.md → Shared test data,
+ * plus a credit fixture set (a renter with credit, a moved-out renter with a refund due, one who owes).
+ *
+ * Mock logins (password for all: `Password1`):
+ * - admin@irent.test (admin)
+ * - ana@irent.test  — all paid, ₱500 credit; one auto-verified overpayment waiting for review
+ * - ben@irent.test  — FIL, September rent partial (auto-verified ₱1,500 waiting for review), open electricity share
+ * - cara@irent.test — invite pending; September rent unpaid and overdue
+ * - gil@irent.test  — moved out, refund due ₱400
+ * - hana@irent.test — moved out, owes ₱250 (credit refunded, then its source payment was rejected)
+ *
+ * All money here is in centavos.
+ */
+import { BED_PHOTO_URLS } from "../lib/demoPhotos";
+import { addDays, manilaToday } from "../lib/time";
+import type {
+  AnnouncementRec,
+  ArchiveRec,
+  BedRec,
+  BillRec,
+  ChargeRec,
+  ExpenseRec,
+  InquiryRec,
+  PromoRec,
+  LedgerRec,
+  PaymentRec,
+  ProfileRec,
+  SettingsRec,
+  ShareRec,
+  TenancyRec,
+  RecurringRec,
+  ScheduleEventRec,
+  MaintenanceRec,
+} from "./db";
+
+export const MOCK_PASSWORD = "Password1";
+
+/** A neutral placeholder QR / screenshot image (inline SVG, no network). */
+export function placeholderImage(label: string): string {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240"><rect width="240" height="240" fill="#F4F4F5"/><rect x="20" y="20" width="60" height="60" fill="#18181B"/><rect x="160" y="20" width="60" height="60" fill="#18181B"/><rect x="20" y="160" width="60" height="60" fill="#18181B"/><text x="120" y="130" font-family="sans-serif" font-size="14" text-anchor="middle" fill="#3F3F46">${label}</text></svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
+const ts = (date: string, time = "10:00:00") => `${date}T${time}+08:00`;
+
+/** A birthday N days from today (leap birth years, so Feb 29 stays valid): keeps the Upcoming birthdays card alive on any date. */
+const birthdayIn = (days: number, year: number) =>
+  `${year}${addDays(manilaToday(), days).slice(4)}`;
+
+export function seed() {
+  const profiles: ProfileRec[] = [
+    {
+      id: "usr-admin",
+      full_name: "Bernie Baltazar",
+      email: "admin@irent.test",
+      phone: "09170000000",
+      role: "admin",
+      language: "en",
+      password: MOCK_PASSWORD,
+      invited_at: null,
+      activated_at: ts("2026-07-01"),
+      is_active: true,
+    },
+    {
+      id: "usr-ana",
+      full_name: "Ana Cruz",
+      email: "ana@irent.test",
+      phone: "09171112222",
+      role: "renter",
+      language: "en",
+      password: MOCK_PASSWORD,
+      invited_at: ts("2026-08-01"),
+      activated_at: ts("2026-08-02"),
+      is_active: true,
+      birthday: birthdayIn(0, 2004),
+    },
+    {
+      id: "usr-ben",
+      full_name: "Ben Dela Rosa",
+      email: "ben@irent.test",
+      phone: "09182223333",
+      role: "renter",
+      language: "fil",
+      password: MOCK_PASSWORD,
+      invited_at: ts("2026-07-15"),
+      activated_at: ts("2026-07-16"),
+      is_active: true,
+      birthday: birthdayIn(9, 2000),
+    },
+    {
+      id: "usr-cara",
+      full_name: "Cara Mendoza",
+      email: "cara@irent.test",
+      phone: "09193334444",
+      role: "renter",
+      language: "en",
+      password: MOCK_PASSWORD,
+      invited_at: ts("2026-08-30"),
+      activated_at: null,
+      is_active: true,
+      birthday: birthdayIn(34, 2004),
+    },
+    {
+      id: "usr-gil",
+      full_name: "Gil Navarro",
+      email: "gil@irent.test",
+      phone: "09204445555",
+      role: "renter",
+      language: "en",
+      password: MOCK_PASSWORD,
+      invited_at: ts("2026-05-01"),
+      activated_at: ts("2026-05-02"),
+      is_active: true,
+      birthday: birthdayIn(5, 1992),
+    },
+    {
+      id: "usr-hana",
+      full_name: "Hana Villanueva",
+      email: "hana@irent.test",
+      phone: "09215556666",
+      role: "renter",
+      language: "fil",
+      password: MOCK_PASSWORD,
+      invited_at: ts("2026-03-25"),
+      activated_at: ts("2026-03-26"),
+      is_active: true,
+    },
+    // 3 months of arrears (July, August, September rent unpaid): the dashboard's oldest-first pay-toward-total demo.
+    {
+      id: "usr-jomar",
+      full_name: "Jomar Bautista",
+      email: "jomar@irent.test",
+      phone: "09271234567",
+      role: "renter",
+      language: "en",
+      password: MOCK_PASSWORD,
+      invited_at: ts("2026-06-10"),
+      activated_at: ts("2026-06-11"),
+      is_active: true,
+      birthday: birthdayIn(12, 1996),
+    },
+    {
+      id: "usr-elena",
+      full_name: "Elena Soriano",
+      email: "elena@irent.test",
+      phone: "09281234567",
+      role: "renter",
+      language: "en",
+      password: MOCK_PASSWORD,
+      invited_at: ts("2026-09-18"),
+      activated_at: ts("2026-09-18"),
+      is_active: true,
+      birthday: birthdayIn(18, 2000),
+    },
+    {
+      id: "usr-marifel",
+      full_name: "Marifel Garcia",
+      email: "marifel@irent.test",
+      phone: "09291234567",
+      role: "renter",
+      language: "fil",
+      password: MOCK_PASSWORD,
+      invited_at: ts("2026-09-03"),
+      activated_at: ts("2026-09-04"),
+      is_active: true,
+      birthday: birthdayIn(25, 2004),
+    },
+  ];
+
+  const beds: BedRec[] = [
+    {
+      id: "bed-1",
+      label: "Room A – Lower Bunk 1",
+      room: "Room A",
+      bunk_type: "lower",
+      monthly_rate: 450000,
+      status: "occupied",
+      photo_url: BED_PHOTO_URLS[0],
+    },
+    {
+      id: "bed-2",
+      label: "Room A – Upper Bunk 1",
+      room: "Room A",
+      bunk_type: "upper",
+      monthly_rate: 400000,
+      status: "occupied",
+      photo_url: BED_PHOTO_URLS[1],
+    },
+    {
+      id: "bed-3",
+      label: "Room A – Lower Bunk 2",
+      room: "Room A",
+      bunk_type: "lower",
+      monthly_rate: 450000,
+      status: "occupied",
+      photo_url: BED_PHOTO_URLS[2],
+    },
+    {
+      id: "bed-4",
+      label: "Room A – Upper Bunk 2",
+      room: "Room A",
+      bunk_type: "upper",
+      monthly_rate: 400000,
+      status: "occupied",
+      photo_url: BED_PHOTO_URLS[0],
+    },
+    {
+      id: "bed-5",
+      label: "Room A – Lower Bunk 3",
+      room: "Room A",
+      bunk_type: "lower",
+      monthly_rate: 450000,
+      status: "vacant",
+      photo_url: BED_PHOTO_URLS[1],
+    },
+    {
+      id: "bed-6",
+      label: "Room A – Upper Bunk 3",
+      room: "Room A",
+      bunk_type: "upper",
+      monthly_rate: 400000,
+      status: "occupied",
+      photo_url: BED_PHOTO_URLS[2],
+    },
+    {
+      id: "bed-7",
+      label: "Room B – Lower Bunk",
+      room: "Room B",
+      bunk_type: "lower",
+      monthly_rate: 450000,
+      status: "occupied",
+      photo_url: BED_PHOTO_URLS[1],
+    },
+    {
+      id: "bed-8",
+      label: "Room B – Upper Bunk",
+      room: "Room B",
+      bunk_type: "upper",
+      monthly_rate: 400000,
+      status: "vacant",
+      photo_url: BED_PHOTO_URLS[2],
+    },
+  ];
+
+  const tenancies: TenancyRec[] = [
+    {
+      id: "ten-ana",
+      renter_id: "usr-ana",
+      bed_id: "bed-1",
+      move_in: "2026-08-05",
+      move_out: null,
+      deposit: 450000,
+      is_active: true,
+    },
+    {
+      id: "ten-ben",
+      renter_id: "usr-ben",
+      bed_id: "bed-2",
+      move_in: "2026-07-20",
+      move_out: null,
+      deposit: 400000,
+      is_active: true,
+    },
+    {
+      id: "ten-cara",
+      renter_id: "usr-cara",
+      bed_id: "bed-3",
+      move_in: "2026-09-01",
+      move_out: null,
+      deposit: null,
+      is_active: true,
+    },
+    {
+      id: "ten-gil",
+      renter_id: "usr-gil",
+      bed_id: "bed-4",
+      move_in: "2026-05-10",
+      move_out: "2026-09-15",
+      deposit: 400000,
+      is_active: false,
+    },
+    {
+      id: "ten-hana",
+      renter_id: "usr-hana",
+      bed_id: "bed-6",
+      move_in: "2026-04-01",
+      move_out: "2026-08-31",
+      deposit: null,
+      is_active: false,
+    },
+    {
+      id: "ten-jomar",
+      renter_id: "usr-jomar",
+      bed_id: "bed-7",
+      move_in: "2026-06-12",
+      move_out: null,
+      deposit: 450000,
+      is_active: true,
+    },
+    {
+      id: "ten-elena",
+      renter_id: "usr-elena",
+      bed_id: "bed-4",
+      move_in: "2026-09-20",
+      move_out: null,
+      deposit: 400000,
+      is_active: true,
+    },
+    {
+      id: "ten-marifel",
+      renter_id: "usr-marifel",
+      bed_id: "bed-6",
+      move_in: "2026-09-05",
+      move_out: null,
+      deposit: 400000,
+      is_active: true,
+    },
+  ];
+
+  const charges: ChargeRec[] = [
+    {
+      id: "chg-ana-2026-08",
+      tenancy_id: "ten-ana",
+      period: "2026-08-01",
+      amount: 450000,
+      due_date: "2026-08-05",
+      created_at: ts("2026-08-01", "08:00:00"),
+    },
+    {
+      id: "chg-ana-2026-09",
+      tenancy_id: "ten-ana",
+      period: "2026-09-01",
+      amount: 450000,
+      due_date: "2026-09-05",
+      created_at: ts("2026-09-01", "08:00:00"),
+    },
+    {
+      id: "chg-ben-2026-08",
+      tenancy_id: "ten-ben",
+      period: "2026-08-01",
+      amount: 400000,
+      due_date: "2026-08-20",
+      created_at: ts("2026-08-01", "08:00:01"),
+    },
+    {
+      id: "chg-ben-2026-09",
+      tenancy_id: "ten-ben",
+      period: "2026-09-01",
+      amount: 400000,
+      due_date: "2026-09-20",
+      created_at: ts("2026-09-01", "08:00:01"),
+    },
+    {
+      id: "chg-cara-2026-09",
+      tenancy_id: "ten-cara",
+      period: "2026-09-01",
+      amount: 450000,
+      due_date: "2026-09-01",
+      created_at: ts("2026-09-01", "08:00:02"),
+    },
+    {
+      id: "chg-gil-2026-09",
+      tenancy_id: "ten-gil",
+      period: "2026-09-01",
+      amount: 400000,
+      due_date: "2026-09-10",
+      created_at: ts("2026-09-01", "08:00:03"),
+    },
+    {
+      id: "chg-hana-2026-08",
+      tenancy_id: "ten-hana",
+      period: "2026-08-01",
+      amount: 400000,
+      due_date: "2026-08-01",
+      created_at: ts("2026-07-25", "08:00:00"),
+    },
+    {
+      id: "chg-jomar-2026-06",
+      tenancy_id: "ten-jomar",
+      period: "2026-06-01",
+      amount: 450000,
+      due_date: "2026-06-12",
+      created_at: ts("2026-06-01", "08:00:04"),
+    },
+    {
+      id: "chg-jomar-2026-07",
+      tenancy_id: "ten-jomar",
+      period: "2026-07-01",
+      amount: 450000,
+      due_date: "2026-07-12",
+      created_at: ts("2026-07-01", "08:00:04"),
+    },
+    {
+      id: "chg-jomar-2026-08",
+      tenancy_id: "ten-jomar",
+      period: "2026-08-01",
+      amount: 450000,
+      due_date: "2026-08-12",
+      created_at: ts("2026-08-01", "08:00:04"),
+    },
+    {
+      id: "chg-jomar-2026-09",
+      tenancy_id: "ten-jomar",
+      period: "2026-09-01",
+      amount: 450000,
+      due_date: "2026-09-12",
+      created_at: ts("2026-09-01", "08:00:04"),
+    },
+    {
+      id: "chg-elena-2026-09",
+      tenancy_id: "ten-elena",
+      period: "2026-09-01",
+      amount: 400000,
+      due_date: "2026-09-20",
+      created_at: ts("2026-09-18", "08:00:00"),
+    },
+    {
+      id: "chg-marifel-2026-09",
+      tenancy_id: "ten-marifel",
+      period: "2026-09-01",
+      amount: 400000,
+      due_date: "2026-09-05",
+      created_at: ts("2026-09-03", "08:00:00"),
+    },
+  ];
+
+  const bills: BillRec[] = [
+    {
+      id: "bill-elec-2026-09",
+      type: "electricity",
+      period: "2026-09-01",
+      total: 90000,
+      due_date: "2026-09-30",
+      created_at: ts("2026-09-10"),
+    },
+  ];
+  const shares: ShareRec[] = [
+    // BR-5 order: move-in date, then id → ben (Jul 20), ana (Aug 5), cara (Sep 1).
+    {
+      id: "shr-ben-elec-09",
+      bill_id: "bill-elec-2026-09",
+      tenancy_id: "ten-ben",
+      amount: 30000,
+      created_at: ts("2026-09-10"),
+    },
+    {
+      id: "shr-ana-elec-09",
+      bill_id: "bill-elec-2026-09",
+      tenancy_id: "ten-ana",
+      amount: 30000,
+      created_at: ts("2026-09-10"),
+    },
+    {
+      id: "shr-cara-elec-09",
+      bill_id: "bill-elec-2026-09",
+      tenancy_id: "ten-cara",
+      amount: 30000,
+      created_at: ts("2026-09-10"),
+    },
+  ];
+
+  const pay = (
+    p: Partial<PaymentRec> &
+      Pick<
+        PaymentRec,
+        | "id"
+        | "tenancy_id"
+        | "item_type"
+        | "item_id"
+        | "method"
+        | "amount"
+        | "applied"
+        | "paid_at"
+        | "verification"
+      >,
+  ): PaymentRec => ({
+    credit: p.amount - p.applied,
+    reference_no: null,
+    has_proof: false,
+    notes: null,
+    rejection_reason: null,
+    reviewed_at: null,
+    submitted_by: null,
+    ...p,
+  });
+
+  const payments: PaymentRec[] = [
+    // D-27 (R77 timeline): a rejected upload before the confirmed one, so Ana's History shows the Rejected path.
+    pay({
+      id: "pay-ana-0",
+      tenancy_id: "ten-ana",
+      item_type: "charge",
+      item_id: "chg-ana-2026-08",
+      method: "gcash",
+      amount: 450000,
+      applied: 450000,
+      reference_no: "GC 0990 2026",
+      has_proof: true,
+      paid_at: ts("2026-08-03"),
+      verification: "rejected",
+      rejection_reason: "This reference number isn't in our GCash history.",
+      reviewed_at: ts("2026-08-04", "09:00:00"),
+      submitted_by: "usr-ana",
+    }),
+    pay({
+      id: "pay-ana-1",
+      tenancy_id: "ten-ana",
+      item_type: "charge",
+      item_id: "chg-ana-2026-08",
+      method: "gcash",
+      amount: 450000,
+      applied: 450000,
+      reference_no: "GC 1001 2026",
+      has_proof: true,
+      paid_at: ts("2026-08-04"),
+      verification: "confirmed",
+      reviewed_at: ts("2026-08-05"),
+      submitted_by: "usr-ana",
+    }),
+    // Overpayment: ₱5,300 on a ₱4,500 charge → ₱800 credit; ₱300 of it paid the September electricity share.
+    pay({
+      id: "pay-ana-2",
+      tenancy_id: "ten-ana",
+      item_type: "charge",
+      item_id: "chg-ana-2026-09",
+      method: "gcash",
+      amount: 530000,
+      applied: 450000,
+      reference_no: "GC 2002 2026",
+      has_proof: true,
+      paid_at: ts("2026-09-04"),
+      verification: "auto_verified",
+      submitted_by: "usr-ana",
+    }),
+    pay({
+      id: "pay-ana-3",
+      tenancy_id: "ten-ana",
+      item_type: "bill_share",
+      item_id: "shr-ana-elec-09",
+      method: "credit",
+      amount: 30000,
+      applied: 30000,
+      paid_at: ts("2026-09-10"),
+      verification: "confirmed",
+      submitted_by: "usr-admin",
+    }),
+    pay({
+      id: "pay-ben-1",
+      tenancy_id: "ten-ben",
+      item_type: "charge",
+      item_id: "chg-ben-2026-08",
+      method: "cash",
+      amount: 400000,
+      applied: 400000,
+      paid_at: ts("2026-08-19"),
+      verification: "confirmed",
+      reviewed_at: ts("2026-08-19"),
+      notes: "Paid in person",
+      submitted_by: "usr-admin",
+    }),
+    pay({
+      id: "pay-ben-2",
+      tenancy_id: "ten-ben",
+      item_type: "charge",
+      item_id: "chg-ben-2026-09",
+      method: "maya",
+      amount: 150000,
+      applied: 150000,
+      reference_no: "MY-3003-2026",
+      has_proof: true,
+      paid_at: ts("2026-09-18"),
+      verification: "auto_verified",
+      submitted_by: "usr-ben",
+    }),
+    pay({
+      id: "pay-gil-1",
+      tenancy_id: "ten-gil",
+      item_type: "charge",
+      item_id: "chg-gil-2026-09",
+      method: "gcash",
+      amount: 440000,
+      applied: 400000,
+      reference_no: "GC 4004 2026",
+      has_proof: true,
+      paid_at: ts("2026-09-09"),
+      verification: "confirmed",
+      reviewed_at: ts("2026-09-10"),
+      submitted_by: "usr-gil",
+    }),
+    pay({
+      id: "pay-hana-1",
+      tenancy_id: "ten-hana",
+      item_type: "charge",
+      item_id: "chg-hana-2026-08",
+      method: "gcash",
+      amount: 425000,
+      applied: 400000,
+      reference_no: "GC 5005 2026",
+      has_proof: true,
+      paid_at: ts("2026-07-31"),
+      verification: "rejected",
+      rejection_reason: "The reference number is not in our GCash history.",
+      reviewed_at: ts("2026-09-05"),
+      submitted_by: "usr-hana",
+    }),
+    pay({
+      id: "pay-jomar-1",
+      tenancy_id: "ten-jomar",
+      item_type: "charge",
+      item_id: "chg-jomar-2026-06",
+      method: "cash",
+      amount: 450000,
+      applied: 450000,
+      paid_at: ts("2026-06-11"),
+      verification: "confirmed",
+      reviewed_at: ts("2026-06-11"),
+      notes: "Paid in person at move-in",
+      submitted_by: "usr-admin",
+    }),
+    pay({
+      id: "pay-elena-1",
+      tenancy_id: "ten-elena",
+      item_type: "charge",
+      item_id: "chg-elena-2026-09",
+      method: "gcash",
+      amount: 400000,
+      applied: 400000,
+      reference_no: "GC 6006 2026",
+      has_proof: true,
+      paid_at: ts("2026-09-19"),
+      verification: "confirmed",
+      reviewed_at: ts("2026-09-19"),
+      submitted_by: "usr-elena",
+    }),
+    pay({
+      id: "pay-marifel-1",
+      tenancy_id: "ten-marifel",
+      item_type: "charge",
+      item_id: "chg-marifel-2026-09",
+      method: "maya",
+      amount: 400000,
+      applied: 400000,
+      reference_no: "MY-7007-2026",
+      has_proof: true,
+      paid_at: ts("2026-09-04"),
+      verification: "confirmed",
+      reviewed_at: ts("2026-09-05"),
+      submitted_by: "usr-marifel",
+    }),
+  ];
+
+  const ledger: LedgerRec[] = [
+    {
+      id: "led-ana-1",
+      renter_id: "usr-ana",
+      created_at: ts("2026-09-04", "10:00:01"),
+      entry_type: "overpayment",
+      amount: 80000,
+      payment_id: "pay-ana-2",
+      item: { type: "charge", id: "chg-ana-2026-09" },
+    },
+    {
+      id: "led-ana-2",
+      renter_id: "usr-ana",
+      created_at: ts("2026-09-10", "10:00:01"),
+      entry_type: "application",
+      amount: -30000,
+      payment_id: "pay-ana-3",
+      item: { type: "bill_share", id: "shr-ana-elec-09" },
+    },
+    {
+      id: "led-gil-1",
+      renter_id: "usr-gil",
+      created_at: ts("2026-09-09", "10:00:01"),
+      entry_type: "overpayment",
+      amount: 40000,
+      payment_id: "pay-gil-1",
+      item: { type: "charge", id: "chg-gil-2026-09" },
+    },
+    {
+      id: "led-hana-1",
+      renter_id: "usr-hana",
+      created_at: ts("2026-07-31", "10:00:01"),
+      entry_type: "overpayment",
+      amount: 25000,
+      payment_id: "pay-hana-1",
+      item: { type: "charge", id: "chg-hana-2026-08" },
+    },
+    {
+      id: "led-hana-2",
+      renter_id: "usr-hana",
+      created_at: ts("2026-09-01"),
+      entry_type: "refund",
+      amount: -25000,
+      refund_method: "cash",
+      note: "Refunded at move-out",
+    },
+    {
+      id: "led-hana-3",
+      renter_id: "usr-hana",
+      created_at: ts("2026-09-05"),
+      entry_type: "reversal",
+      amount: -25000,
+      payment_id: "pay-hana-1",
+    },
+  ];
+
+  const inquiries: InquiryRec[] = [
+    {
+      id: "inq-1",
+      name: "Maria Santos",
+      phone: "09171234567",
+      email: "maria@example.com",
+      preferred_date: "2026-10-05",
+      message: "Is the lower bunk in Room B still available?",
+      status: "new",
+      created_at: ts("2026-09-24", "14:12:00"),
+      updated_at: ts("2026-09-24", "14:12:00"),
+      scheduled_at: null,
+      schedule_note: null,
+    },
+    {
+      id: "inq-2",
+      name: "Jose Ramos",
+      phone: "+639189876543",
+      email: null,
+      preferred_date: null,
+      message: null,
+      status: "new",
+      created_at: ts("2026-09-23", "09:40:00"),
+      updated_at: ts("2026-09-23", "09:40:00"),
+      scheduled_at: null,
+      schedule_note: null,
+    },
+    {
+      id: "inq-3",
+      name: "Liza Garcia",
+      phone: "09221231234",
+      email: "liza@example.com",
+      preferred_date: "2026-09-28",
+      message: "Can I bring my own cabinet?",
+      status: "contacted",
+      created_at: ts("2026-09-20", "18:05:00"),
+      updated_at: ts("2026-09-21", "10:00:00"),
+      scheduled_at: null,
+      schedule_note: null,
+    },
+    // Proposed (viewings): two scheduled viewings near "today", so the calendar always has marks.
+    {
+      id: "inq-4",
+      name: "Paolo Reyes",
+      phone: "09175556677",
+      email: "paolo@example.com",
+      preferred_date: addDays(manilaToday(), 2),
+      message: "Looking for a lower bunk near my work.",
+      status: "scheduled",
+      scheduled_at: `${addDays(manilaToday(), 2)}T10:00:00+08:00`,
+      schedule_note: "Bring a valid ID.",
+      created_at: ts("2026-09-15", "11:00:00"),
+      updated_at: ts("2026-09-16", "09:00:00"),
+    },
+    {
+      id: "inq-5",
+      name: "Grace Tan",
+      phone: "09186667788",
+      email: null,
+      preferred_date: addDays(manilaToday(), 5),
+      message: null,
+      status: "scheduled",
+      scheduled_at: `${addDays(manilaToday(), 5)}T15:30:00+08:00`,
+      schedule_note: null,
+      created_at: ts("2026-09-12", "16:20:00"),
+      updated_at: ts("2026-09-13", "10:00:00"),
+    },
+  ];
+
+  // D-25: general announcements default to published at creation; Bernie sees one of each new state:
+  // a current maintenance notice (ann-4, long body + image for Read more), a scheduled one with a pending email (ann-5,
+  // admin only until it publishes) and an ended notice (ann-6, admin only).
+  const ann = (
+    a: Omit<
+      AnnouncementRec,
+      | "kind"
+      | "starts_on"
+      | "ends_on"
+      | "start_time"
+      | "end_time"
+      | "publish_at"
+      | "email_pending"
+      | "position"
+      | "schedule_event_id"
+    > &
+      Partial<AnnouncementRec>,
+  ): AnnouncementRec => ({
+    kind: "general",
+    starts_on: null,
+    ends_on: null,
+    start_time: null,
+    end_time: null,
+    publish_at: a.created_at,
+    email_pending: false,
+    position: 0, // set below
+    schedule_event_id: null,
+    ...a,
+  });
+  const today = manilaToday();
+  const announcements: AnnouncementRec[] = [
+    ann({
+      id: "ann-1",
+      title: "Water interruption on Saturday",
+      body: "Maynilad will cut the water supply on Saturday from 9 AM to 3 PM. Please store water the night before.",
+      image_url: null,
+      priority: "normal",
+      pinned: true,
+      emailed_at: null,
+      created_at: ts("2026-09-20", "17:00:00"),
+      updated_at: ts("2026-09-20", "17:00:00"),
+    }),
+    ann({
+      id: "ann-2",
+      title: "New gate code from Monday",
+      body: "The main gate code changes on Monday. Ask the owner for the new code in person.",
+      image_url: null,
+      priority: "urgent",
+      pinned: false,
+      emailed_at: ts("2026-09-22", "08:05:00"),
+      created_at: ts("2026-09-22", "08:00:00"),
+      updated_at: ts("2026-09-22", "08:00:00"),
+    }),
+    ann({
+      id: "ann-3",
+      title: "Welcome to iRent",
+      body: "You can now see your balance, pay your rent and read announcements here.",
+      image_url: null,
+      priority: "normal",
+      pinned: false,
+      emailed_at: null,
+      created_at: ts("2026-09-01", "09:00:00"),
+      updated_at: ts("2026-09-01", "09:00:00"),
+    }),
+    ann({
+      id: "ann-4",
+      kind: "maintenance",
+      title: "Aircon cleaning in all rooms",
+      body:
+        "Technicians will clean every aircon unit, one room at a time, so each room's aircon will be off for about two hours." +
+        "Please clear the space under your unit, cover your bed and desk with a sheet, and keep your valuables locked away. " +
+        "If you work night shifts and need to sleep during the day, tell the owner which time is best for your room and we will try to schedule it around you." +
+        "The technicians will knock before entering. Thank you for your patience.",
+      image_url: placeholderImage("Aircon cleaning"),
+      priority: "normal",
+      pinned: false,
+      emailed_at: ts(addDays(today, -1), "08:05:00"),
+      created_at: ts(addDays(today, -1), "08:00:00"),
+      updated_at: ts(addDays(today, -1), "08:00:00"),
+      starts_on: today,
+      ends_on: addDays(today, 1),
+      start_time: "09:00",
+      end_time: "17:00",
+    }),
+    ann({
+      id: "ann-5",
+      title: "Pest control next week",
+      body: "A pest control team will spray the hallways and the kitchen. Keep food in closed containers.",
+      image_url: null,
+      priority: "normal",
+      pinned: false,
+      emailed_at: null,
+      created_at: ts(today, "07:30:00"),
+      updated_at: ts(today, "07:30:00"),
+      publish_at: ts(addDays(today, 3), "08:00:00"),
+      email_pending: true,
+    }),
+    ann({
+      id: "ann-6",
+      kind: "maintenance",
+      title: "Electrical inspection",
+      body: "Meralco will inspect the meter. Power may go off for a few minutes.",
+      image_url: null,
+      priority: "normal",
+      pinned: false,
+      emailed_at: null,
+      created_at: ts(addDays(today, -12), "18:00:00"),
+      updated_at: ts(addDays(today, -12), "18:00:00"),
+      starts_on: addDays(today, -10),
+      ends_on: addDays(today, -10),
+    }),
+    // "Post to renters" sample: the notice linked to the schedule item ev-5 (same title, note and window). Created before
+    // ann-3, so it sits last in ana's feed.
+    ann({
+      id: "ann-14",
+      kind: "maintenance",
+      title: "Water interruption: tank repair",
+      body: "Maynilad is repairing the main tank. Store water the night before.",
+      image_url: null,
+      priority: "normal",
+      pinned: false,
+      emailed_at: ts("2026-08-30", "09:00:00"),
+      created_at: ts("2026-08-30", "09:00:00"),
+      updated_at: ts("2026-08-30", "09:00:00"),
+      starts_on: addDays(today, 2),
+      ends_on: addDays(today, 2),
+      start_time: "09:00",
+      end_time: "12:00",
+      schedule_event_id: "ev-5",
+    }),
+    // D-30 sample (SC-95 paging): past maintenance notices, all ended, so the admin table has 14 rows (2 pages of 10)
+    // while renters still see the same 5 posts.
+    ...[
+      ["ann-7", "Water tank cleaning", 20],
+      ["ann-8", "Elevator maintenance", 27],
+      ["ann-9", "Internet line upgrade", 34],
+      ["ann-10", "Repainting the hallway", 45],
+      ["ann-11", "Fire extinguisher check", 60],
+      ["ann-12", "Septic tank service", 75],
+      ["ann-13", "Roof leak repair", 90],
+    ].map(([id, title, daysAgo]) =>
+      ann({
+        id: id as string,
+        kind: "maintenance",
+        title: title as string,
+        body: `${title}. Expect some noise during the day; thank you for your patience.`,
+        image_url: null,
+        priority: "normal",
+        pinned: false,
+        emailed_at: null,
+        created_at: ts(addDays(today, -(daysAgo as number) - 2), "09:00:00"),
+        updated_at: ts(addDays(today, -(daysAgo as number) - 2), "09:00:00"),
+        starts_on: addDays(today, -(daysAgo as number)),
+        ends_on: addDays(today, -(daysAgo as number) + 1),
+      }),
+    ),
+  ];
+  // D-30 backfill: positions keep the old renter order (pinned, then urgent, then newest).
+  [...announcements]
+    .sort((a, b) => Number(b.pinned) - Number(a.pinned) || Number(b.priority === "urgent") - Number(a.priority === "urgent") || b.created_at.localeCompare(a.created_at))
+    .forEach((a, i) => (a.position = i + 1));
+
+  // Proposed (design pass): expenses. Upgrades, appliances, repairs and supplies from April to October 2026.
+  const exp = (
+    id: string,
+    spent_on: string,
+    category: ExpenseRec["category"],
+    description: string,
+    amount: number,
+    note: string | null = null,
+  ): ExpenseRec => ({
+    id,
+    spent_on,
+    category,
+    description,
+    amount,
+    recurring_id: null,
+    note,
+    created_at: ts(spent_on, "18:00:00"),
+  });
+  const expenses: ExpenseRec[] = [
+    exp("exp-1", "2026-04-08", "appliance", "Electric fan, Room B", 185000),
+    exp(
+      "exp-2",
+      "2026-04-20",
+      "supplies",
+      "Bedsheets and pillowcases (6 sets)",
+      360000,
+    ),
+    exp("exp-3", "2026-05-12", "repair", "Leaking faucet, CR 1", 65000),
+    exp(
+      "exp-4",
+      "2026-06-03",
+      "upgrade",
+      "Blackout curtains, both rooms",
+      240000,
+    ),
+    exp(
+      "exp-5",
+      "2026-06-25",
+      "maintenance",
+      "Aircon cleaning, Room A",
+      150000,
+    ),
+    exp(
+      "exp-6",
+      "2026-07-15",
+      "appliance",
+      "Rice cooker, shared kitchen",
+      129900,
+    ),
+    exp("exp-7", "2026-08-02", "upgrade", "Reading lights for 6 bunks", 270000),
+    exp("exp-8", "2026-08-22", "repair", "New door lock, Room B", 115000),
+    exp("exp-9", "2026-09-05", "supplies", "Cleaning supplies", 82000),
+    exp(
+      "exp-10",
+      "2026-09-18",
+      "appliance",
+      "Refrigerator, shared kitchen",
+      1499500,
+      "Inverter, 7 cu. ft. Receipt in the blue folder.",
+    ),
+    exp(
+      "exp-11",
+      "2026-10-03",
+      "maintenance",
+      "Pest control, whole unit",
+      250000,
+    ),
+    exp("exp-12", "2026-10-10", "upgrade", "Wi-Fi mesh router", 349000),
+  ];
+
+  // Mock-only cash received in the months before the first charge in this seed (Hana from April, Gil from May, Ben from July; Jomar's June rent is a real seeded charge).
+  const archive: ArchiveRec[] = [
+    { period: "2026-04-01", revenue: 400000 },
+    { period: "2026-05-01", revenue: 800000 },
+    { period: "2026-06-01", revenue: 800000 },
+    { period: "2026-07-01", revenue: 1200000 },
+  ];
+
+  // Proposed (promotions): two live, one scheduled for December, one hidden and expired. Stand-in demo photos.
+  const promo = (p: Omit<PromoRec, "created_at">): PromoRec => ({
+    ...p,
+    created_at: ts("2026-10-01"),
+  });
+  const promotions: PromoRec[] = [
+    promo({
+      id: "promo-1",
+      position: 1,
+      visible: true,
+      title: "₱500 off your first month",
+      badge: "Limited time",
+      description:
+        "Move in on or before November 30 and get ₱500 off your first month of rent. Lower and upper bunks.",
+      image_url: "/images/demo/room-1-1200.webp",
+      cta_action: "viewing",
+      cta_label: "Schedule a Viewing",
+      cta_section: null,
+      starts_on: "2026-10-01",
+      ends_on: "2026-11-30",
+    }),
+    promo({
+      id: "promo-2",
+      position: 2,
+      visible: true,
+      title: "Refer a friend, both get ₱300 credit",
+      badge: "Referral",
+      description:
+        "When a friend you refer moves in, you and your friend each get ₱300 credit on your next bill.",
+      image_url: "/images/demo/hero-1024.webp",
+      cta_action: "section",
+      cta_label: "See the rates",
+      cta_section: "rates",
+      starts_on: null,
+      ends_on: null,
+    }),
+    promo({
+      id: "promo-3",
+      position: 3,
+      visible: true,
+      title: "December move-in: free Wi-Fi for the month",
+      badge: "Holiday",
+      description:
+        "Move in during December and your first month of Wi-Fi is on us.",
+      image_url: "/images/demo/amenity-clubhouse-1200.webp",
+      cta_action: "viewing",
+      cta_label: "Schedule a Viewing",
+      cta_section: null,
+      starts_on: "2026-12-01",
+      ends_on: "2026-12-31",
+    }),
+    promo({
+      id: "promo-4",
+      position: 4,
+      visible: false,
+      title: "Summer pool pass",
+      badge: null,
+      description: "Free clubhouse pool access for renters, April to May.",
+      image_url: "/images/demo/amenity-pool-1200.webp",
+      cta_action: "none",
+      cta_label: null,
+      cta_section: null,
+      starts_on: "2026-04-01",
+      ends_on: "2026-05-31",
+    }),
+  ];
+
+  const settings: SettingsRec = {
+    reminders_enabled: true,
+    reminder_types: [
+      "due_minus_3",
+      "due_today",
+      "overdue_1",
+      "overdue_3",
+      "overdue_7",
+    ],
+    payment_accounts: [
+      {
+        method: "gcash",
+        enabled: true,
+        account_name: "B. Placeholder",
+        account_number: "0917 000 0000",
+        qr_url: placeholderImage("GCash QR (placeholder)"),
+      },
+      {
+        method: "maya",
+        enabled: true,
+        account_name: "B. Placeholder",
+        account_number: "0917 000 0000",
+        qr_url: placeholderImage("Maya QR (placeholder)"),
+      },
+      {
+        method: "bpi",
+        enabled: true,
+        account_name: "B. Placeholder",
+        account_number: "0000 0000 00",
+        qr_url: null,
+      },
+    ],
+    updated_at: ts("2026-09-01"),
+  };
+
+  // D-31 sample (SC-96 paging): Ana's earlier stay on the same bed, Sep 2024 – Aug 2025, all paid. 12 rent charges and
+  // 12 water bills (her share only), so History has 28 payments (2 pages of 20) and Bills 13 shares (2 pages of 10).
+  // Old periods only, so the 2026 dashboard figures and every open-items list stay as before.
+  tenancies.push({ id: "ten-ana-2024", renter_id: "usr-ana", bed_id: "bed-1", move_in: "2024-09-10", move_out: "2025-08-31", deposit: null, is_active: false });
+  for (let i = 0; i < 12; i++) {
+    const month = `${2024 + Math.floor((8 + i) / 12)}-${String(((8 + i) % 12) + 1).padStart(2, "0")}`;
+    const byRenter = i % 3 !== 0; // every third month paid in cash to the owner
+    charges.push({ id: `chg-ana-${month}`, tenancy_id: "ten-ana-2024", period: `${month}-01`, amount: 450000, due_date: `${month}-10`, created_at: ts(`${month}-01`, "08:00:00") });
+    bills.push({ id: `bill-water-${month}`, type: "water", period: `${month}-01`, total: 25000, due_date: `${month}-25`, created_at: ts(`${month}-15`) });
+    shares.push({ id: `shr-ana-water-${month}`, bill_id: `bill-water-${month}`, tenancy_id: "ten-ana-2024", amount: 25000, created_at: ts(`${month}-15`) });
+    payments.push(
+      pay({
+        id: `pay-ana-rent-${month}`,
+        tenancy_id: "ten-ana-2024",
+        item_type: "charge",
+        item_id: `chg-ana-${month}`,
+        method: byRenter ? "gcash" : "cash",
+        amount: 450000,
+        applied: 450000,
+        reference_no: byRenter ? `GC 9${String(i).padStart(2, "0")}1 2025` : null,
+        has_proof: byRenter,
+        paid_at: ts(`${month}-08`),
+        verification: "confirmed",
+        reviewed_at: ts(`${month}-09`),
+        submitted_by: byRenter ? "usr-ana" : "usr-admin",
+      }),
+      pay({
+        id: `pay-ana-water-${month}`,
+        tenancy_id: "ten-ana-2024",
+        item_type: "bill_share",
+        item_id: `shr-ana-water-${month}`,
+        method: "gcash",
+        amount: 25000,
+        applied: 25000,
+        reference_no: `GC 9${String(i).padStart(2, "0")}2 2025`,
+        has_proof: true,
+        paid_at: ts(`${month}-20`),
+        verification: "confirmed",
+        reviewed_at: ts(`${month}-21`),
+        submitted_by: "usr-ana",
+      }),
+    );
+  }
+
+  // D-26 sample: maintenance requests in every status. Ana: submitted (2 photos), in progress (note), done, declined
+  // (reason). Ben: submitted. Gil (moved out): a past done one. Needs attention shows 2 (the submitted ones).
+  const req = (m: Omit<MaintenanceRec, "status_changed_at" | "updated_at" | "admin_note" | "decline_reason" | "photos"> & Partial<MaintenanceRec>): MaintenanceRec => ({
+    admin_note: null,
+    decline_reason: null,
+    photos: [],
+    status_changed_at: m.created_at,
+    updated_at: m.created_at,
+    ...m,
+  });
+  const ago = (days: number, time = "09:00:00") => ts(addDays(today, -days), time);
+  const maintenance: MaintenanceRec[] = [
+    req({ id: "mr-1", renter_id: "usr-ana", tenancy_id: "ten-ana", category: "plumbing", urgency: "urgent", status: "submitted", created_at: ago(1, "07:40:00"), description: "The sink in Room A leaks under the cabinet. There is water on the floor every morning.", photos: [placeholderImage("Leak under the sink"), placeholderImage("Wet cabinet floor")] }),
+    req({ id: "mr-2", renter_id: "usr-ana", tenancy_id: "ten-ana", category: "aircon", urgency: "normal", status: "in_progress", created_at: ago(6), status_changed_at: ago(5, "14:00:00"), admin_note: "The technician is booked. Please leave the room open that morning.", description: "The aircon blows warm air after an hour and makes a rattling sound." }),
+    req({ id: "mr-3", renter_id: "usr-ana", tenancy_id: "ten-ana", category: "electrical", urgency: "low", status: "done", created_at: ago(20), status_changed_at: ago(18, "16:00:00"), admin_note: "Replaced the broken outlet cover.", description: "The outlet cover beside my bed is cracked and loose." }),
+    req({ id: "mr-4", renter_id: "usr-ana", tenancy_id: "ten-ana", category: "wifi", urgency: "normal", status: "declined", created_at: ago(10), status_changed_at: ago(10, "18:00:00"), decline_reason: "The internet provider had an area outage that day; nothing to fix in the unit.", description: "The Wi-Fi keeps disconnecting in the evening." }),
+    req({ id: "mr-5", renter_id: "usr-ben", tenancy_id: "ten-ben", category: "wifi", urgency: "normal", status: "submitted", created_at: ago(2, "21:15:00"), description: "The Wi-Fi signal is very weak near my bed in Room A." }),
+    req({ id: "mr-6", renter_id: "usr-gil", tenancy_id: "ten-gil", category: "other", urgency: "low", status: "done", created_at: ts("2026-08-02"), status_changed_at: ts("2026-08-04"), admin_note: "New curtain rod installed.", description: "The curtain rod by the window fell off." }),
+  ];
+
+  return {
+    profiles,
+    beds,
+    maintenance,
+    tenancies,
+    charges,
+    bills,
+    shares,
+    payments,
+    ledger,
+    inquiries,
+    announcements,
+    reads: ["ann-3:usr-ana"],
+    settings,
+    expenses,
+    archive,
+    promotions,
+    promoSection: true,
+    // Proposed: birthday greeting template (Ana's birthday is today in these fixtures, so she sees it).
+    greeting: {
+      enabled: true,
+      title: "Happy birthday, {name}!",
+      message:
+        "Everyone at BLDG-Q wishes you a wonderful year ahead, {name}. Your birthday treat is waiting: show this QR code at the guard house to claim a free slice of cake.",
+      link_label: "See your birthday treat",
+      link_url: "https://example.com/birthday",
+      image_url: placeholderImage("Birthday QR (demo)"),
+      updated_at: ts("2026-10-01"),
+    },
+    // Proposed: admin schedule items. Renter items show on Inquiries; "other" items are maintenance (Maintenance page):
+    // ev-2, ev-4, ev-5 (posted to renters as ann-14) and ev-6 (the scheduled fix for ana's aircon request mr-2).
+    scheduleEvents: [
+      {
+        id: "ev-1",
+        type: "renter",
+        title: "Contract signing: Elena Soriano",
+        starts_at: `${addDays(manilaToday(), 1)}T14:00:00+08:00`,
+        ends_at: `${addDays(manilaToday(), 1)}T15:00:00+08:00`,
+        all_day: false,
+        renter_id: "usr-elena",
+        note: "Bring 2 copies of the lease.",
+        notify_renter: true,
+        reminder_sent_for: null,
+        created_at: ts("2026-10-01"),
+        announcement_id: null,
+      },
+      {
+        id: "ev-2",
+        type: "other",
+        title: "Aircon cleaning: Room A",
+        starts_at: `${addDays(manilaToday(), 3)}T00:00:00+08:00`,
+        ends_at: null,
+        all_day: true,
+        renter_id: null,
+        note: null,
+        notify_renter: false,
+        reminder_sent_for: null,
+        created_at: ts("2026-10-01"),
+        announcement_id: null,
+      },
+      {
+        id: "ev-3",
+        type: "renter",
+        title: "Payment follow-up: Jomar Bautista",
+        starts_at: `${manilaToday()}T17:00:00+08:00`,
+        ends_at: null,
+        all_day: false,
+        renter_id: "usr-jomar",
+        note: "3 months unpaid (July to September).",
+        notify_renter: false,
+        reminder_sent_for: null,
+        created_at: ts("2026-10-01"),
+        announcement_id: null,
+      },
+      {
+        id: "ev-4",
+        type: "other",
+        title: "Fire extinguisher check",
+        starts_at: `${addDays(manilaToday(), 8)}T09:00:00+08:00`,
+        ends_at: null,
+        all_day: false,
+        renter_id: null,
+        note: null,
+        notify_renter: false,
+        reminder_sent_for: null,
+        created_at: ts("2026-10-01"),
+        announcement_id: null,
+      },
+      {
+        id: "ev-5",
+        type: "other",
+        title: "Water interruption: tank repair",
+        starts_at: `${addDays(manilaToday(), 2)}T09:00:00+08:00`,
+        ends_at: `${addDays(manilaToday(), 2)}T12:00:00+08:00`,
+        all_day: false,
+        renter_id: null,
+        note: "Maynilad is repairing the main tank. Store water the night before.",
+        notify_renter: false,
+        reminder_sent_for: null,
+        created_at: ts("2026-08-30"),
+        announcement_id: "ann-14",
+      },
+      {
+        id: "ev-6",
+        type: "other",
+        title: "Aircon repair: Ana Cruz",
+        starts_at: `${addDays(manilaToday(), 5)}T09:00:00+08:00`,
+        ends_at: `${addDays(manilaToday(), 5)}T11:00:00+08:00`,
+        all_day: false,
+        renter_id: null,
+        note: "The aircon blows warm air after an hour and makes a rattling sound.",
+        notify_renter: false,
+        reminder_sent_for: null,
+        created_at: ago(5, "14:00:00"),
+        announcement_id: null,
+        maintenance_request_id: "mr-2",
+      },
+    ] as ScheduleEventRec[],
+    // Proposed: recurring expenses (Bernie's fixed monthly costs), active since July 2026.
+    recurring: [
+      {
+        id: "rec-condo",
+        name: "Condo dues",
+        category: "other",
+        amount: 250000,
+        due_day: 5,
+        starts_on: "2026-07-01",
+        ends_on: null,
+        active: true,
+        note: "Association dues for the unit",
+        last_posted_period: null,
+        created_at: ts("2026-07-01"),
+      },
+      {
+        id: "rec-internet",
+        name: "Internet (PLDT)",
+        category: "utilities",
+        amount: 169900,
+        due_day: 15,
+        starts_on: "2026-07-01",
+        ends_on: null,
+        active: true,
+        note: null,
+        last_posted_period: null,
+        created_at: ts("2026-07-01"),
+      },
+      {
+        id: "rec-netflix",
+        name: "Netflix",
+        category: "subscriptions",
+        amount: 54900,
+        due_day: 20,
+        starts_on: "2026-07-01",
+        ends_on: null,
+        active: true,
+        note: null,
+        last_posted_period: null,
+        created_at: ts("2026-07-01"),
+      },
+    ] as RecurringRec[],
+  };
+}

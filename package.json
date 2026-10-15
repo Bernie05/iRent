@@ -1,0 +1,28 @@
+{
+  "name": "irent",
+  "private": true,
+  "version": "0.1.0",
+  "description": "iRent monorepo: client/ (React), server/ (Express), supabase/ (Postgres migrations, seed, config)",
+  "scripts": {
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:status": "supabase status",
+    "db:reset": "supabase db reset",
+    "db:env": "supabase status -o env",
+    "db:types": "supabase gen types typescript --local > server/src/lib/database.types.ts",
+    "server:install": "npm --prefix server install",
+    "server:dev": "npm --prefix server run dev",
+    "server:test": "npm --prefix server test",
+    "client:install": "npm --prefix client install",
+    "client:dev": "npm --prefix client run dev",
+    "client:dev:mocks": "npm --prefix client run dev:mocks",
+    "client:test": "npm --prefix client test",
+    "client:build": "npm --prefix client run build"
+  },
+  "devDependencies": {
+    "supabase": "^2.40.0"
+  },
+  "engines": {
+    "node": "24.x"
+  }
+}

@@ -1,0 +1,317 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`email templates (B11, R48) > admin-payment-notice.en renders (snapshot) and its subject contains "iRent" 1`] = `
+{
+  "subject": "New payment from Ana Cruz: ₱5,000.00 (includes ₱500.00 credit) — iRent",
+  "text": "New payment to review
+
+Ana Cruz uploaded a payment. It was marked received automatically; please check the screenshot.
+
+Renter: Ana Cruz
+For: October 2026 rent
+Amount: ₱5,000.00
+Method: GCash
+Reference no.: GC-5K
+Excess to credit: ₱500.00
+
+Open Payments to review: http://localhost:5173/admin/payments
+
+--
+This email was sent by iRent · BLDG-Q UDHO Community.",
+}
+`;
+
+exports[`email templates (B11, R48) > admin-payment-notice.fil renders (snapshot) and its subject contains "iRent" 1`] = `
+{
+  "subject": "Bagong bayad mula kay Ana Cruz: ₱5,000.00 (kasama ang ₱500.00 na credit) — iRent",
+  "text": "Bagong bayad na susuriin
+
+Nag-upload si Ana Cruz ng bayad. Awtomatiko itong minarkahang natanggap; pakisuri ang screenshot.
+
+Renter: Ana Cruz
+Para sa: upa para sa Oktubre 2026
+Halaga: ₱5,000.00
+Paraan: GCash
+Reference no.: GC-5K
+Sobrang napunta sa credit: ₱500.00
+
+Buksan ang mga bayad na susuriin: http://localhost:5173/admin/payments
+
+--
+Ang email na ito ay mula sa iRent · BLDG-Q UDHO Community.",
+}
+`;
+
+exports[`email templates (B11, R48) > announcement.en renders (snapshot) and its subject contains "iRent" 1`] = `
+{
+  "subject": "Urgent: Water interruption — iRent",
+  "text": "Urgent: Water interruption
+
+> No water tomorrow
+> 9:00 to 12:00.
+
+Open iRent: http://localhost:5173/portal
+
+--
+This email was sent by iRent · BLDG-Q UDHO Community.",
+}
+`;
+
+exports[`email templates (B11, R48) > announcement.fil renders (snapshot) and its subject contains "iRent" 1`] = `
+{
+  "subject": "Mahalaga: Water interruption — iRent",
+  "text": "Mahalaga: Water interruption
+
+> No water tomorrow
+> 9:00 to 12:00.
+
+Buksan ang iRent: http://localhost:5173/portal
+
+--
+Ang email na ito ay mula sa iRent · BLDG-Q UDHO Community.",
+}
+`;
+
+exports[`email templates (B11, R48) > invite.en renders (snapshot) and its subject contains "iRent" 1`] = `
+{
+  "subject": "Welcome to iRent — set your password",
+  "text": "Welcome to iRent, Dan Reyes!
+
+Your renter account is ready. Set your password to see your bed, balance, bills and payments, and to pay rent online.
+
+Set your password: http://localhost:5173/set-password#access_token=abc
+
+This link works once and expires in 24 hours. If it has expired, use "Forgot password?" on the login page or ask the owner to resend your invite.
+
+--
+This email was sent by iRent · BLDG-Q UDHO Community.",
+}
+`;
+
+exports[`email templates (B11, R48) > invite.fil renders (snapshot) and its subject contains "iRent" 1`] = `
+{
+  "subject": "Maligayang pagdating sa iRent — itakda ang iyong password",
+  "text": "Maligayang pagdating sa iRent, Dan Reyes!
+
+Handa na ang iyong renter account. Itakda ang iyong password para makita ang iyong kama, balanse, mga bayarin at mga bayad, at para makapagbayad ng upa online.
+
+Itakda ang password: http://localhost:5173/set-password#access_token=abc
+
+Isang beses lang magagamit ang link na ito at mag-e-expire ito sa loob ng 24 na oras. Kung expired na, gamitin ang "Nakalimutan ang password?" sa login page o hilingin sa may-ari na ipadala muli ang imbitasyon.
+
+--
+Ang email na ito ay mula sa iRent · BLDG-Q UDHO Community.",
+}
+`;
+
+exports[`email templates (B11, R48) > password-reset.en renders (snapshot) and its subject contains "iRent" 1`] = `
+{
+  "subject": "Reset your iRent password",
+  "text": "Reset your password
+
+Hi Ana Cruz, we received a request to reset your iRent password.
+
+Set a new password: http://localhost:5173/set-password#access_token=def
+
+This link works once and expires in 24 hours. If you didn't ask for this, you can ignore this email; your password stays the same.
+
+--
+This email was sent by iRent · BLDG-Q UDHO Community.",
+}
+`;
+
+exports[`email templates (B11, R48) > password-reset.fil renders (snapshot) and its subject contains "iRent" 1`] = `
+{
+  "subject": "I-reset ang iyong iRent password",
+  "text": "I-reset ang iyong password
+
+Hi Ana Cruz, nakatanggap kami ng kahilingang i-reset ang iyong iRent password.
+
+Magtakda ng bagong password: http://localhost:5173/set-password#access_token=def
+
+Isang beses lang magagamit ang link na ito at mag-e-expire ito sa loob ng 24 na oras. Kung hindi ikaw ang humiling nito, balewalain lang ang email na ito; hindi magbabago ang iyong password.
+
+--
+Ang email na ito ay mula sa iRent · BLDG-Q UDHO Community.",
+}
+`;
+
+exports[`email templates (B11, R48) > payment-received.en renders (snapshot) and its subject contains "iRent" 1`] = `
+{
+  "subject": "Payment received: October 2026 rent — iRent",
+  "text": "Payment received
+
+Hi Ana Cruz, thank you! We received your payment of ₱5,000.00 for October 2026 rent. It is now paid.
+
+Amount: ₱5,000.00
+For: October 2026 rent
+Method: GCash
+Reference no.: GC-5K
+Remaining balance: ₱0.00
+Added to your credit: ₱500.00
+Credit balance now: ₱0.00
+
+- ₱500.00 of credit was used for October 2026 electricity bill.
+
+The owner will still check your payment. If there is a problem, we will email you.
+
+--
+This email was sent by iRent · BLDG-Q UDHO Community.",
+}
+`;
+
+exports[`email templates (B11, R48) > payment-received.fil renders (snapshot) and its subject contains "iRent" 1`] = `
+{
+  "subject": "Natanggap ang bayad: upa para sa Oktubre 2026 — iRent",
+  "text": "Natanggap ang bayad
+
+Hi Ana Cruz, salamat! Natanggap namin ang iyong bayad na ₱5,000.00 para sa upa para sa Oktubre 2026. Ito ay bayad na ngayon.
+
+Halaga: ₱5,000.00
+Para sa: upa para sa Oktubre 2026
+Paraan: GCash
+Reference no.: GC-5K
+Natitirang balanse: ₱0.00
+Idinagdag sa iyong credit: ₱500.00
+Credit balance ngayon: ₱0.00
+
+- ₱500.00 ng credit ang ginamit para sa bayarin sa kuryente para sa Oktubre 2026.
+
+Susuriin pa rin ng may-ari ang iyong bayad. Kung may problema, mag-e-email kami sa iyo.
+
+--
+Ang email na ito ay mula sa iRent · BLDG-Q UDHO Community.",
+}
+`;
+
+exports[`email templates (B11, R48) > payment-rejected.en renders (snapshot) and its subject contains "iRent" 1`] = `
+{
+  "subject": "Payment not accepted: October 2026 rent — iRent",
+  "text": "Your payment was not accepted
+
+Hi Ana Cruz, the owner checked your payment of ₱5,000.00 and could not accept it. The reason given:
+
+> The screenshot does not match our GCash history.
+
+Amount: ₱5,000.00
+For: October 2026 rent
+Method: GCash
+Reference no.: GC-5K
+Credit removed: ₱500.00
+
+These items are open again:
+
+- October 2026 electricity bill: ₱500.00 to pay again
+
+If you think this is a mistake, please contact the owner.
+
+--
+This email was sent by iRent · BLDG-Q UDHO Community.",
+}
+`;
+
+exports[`email templates (B11, R48) > payment-rejected.fil renders (snapshot) and its subject contains "iRent" 1`] = `
+{
+  "subject": "Hindi tinanggap ang bayad: upa para sa Oktubre 2026 — iRent",
+  "text": "Hindi tinanggap ang iyong bayad
+
+Hi Ana Cruz, sinuri ng may-ari ang iyong bayad na ₱5,000.00 at hindi ito matanggap. Ang dahilan:
+
+> The screenshot does not match our GCash history.
+
+Halaga: ₱5,000.00
+Para sa: upa para sa Oktubre 2026
+Paraan: GCash
+Reference no.: GC-5K
+Tinanggal na credit: ₱500.00
+
+Bukas muli ang mga ito:
+
+- bayarin sa kuryente para sa Oktubre 2026: ₱500.00 ang babayaran muli
+
+Kung sa tingin mo ay may mali, makipag-ugnayan sa may-ari.
+
+--
+Ang email na ito ay mula sa iRent · BLDG-Q UDHO Community.",
+}
+`;
+
+exports[`email templates (B11, R48) > refund-recorded.en renders (snapshot) and its subject contains "iRent" 1`] = `
+{
+  "subject": "Refund recorded: ₱400.00 — iRent",
+  "text": "Refund recorded
+
+Hi Cai Santos, the owner recorded a refund of ₱400.00 from your credit.
+
+Amount: ₱400.00
+Method: GCash
+Date: October 20, 2026
+Reference no.: RF-1
+Credit balance now: ₱0.00
+
+> Deposit settled
+
+--
+This email was sent by iRent · BLDG-Q UDHO Community.",
+}
+`;
+
+exports[`email templates (B11, R48) > refund-recorded.fil renders (snapshot) and its subject contains "iRent" 1`] = `
+{
+  "subject": "Naitala ang refund: ₱400.00 — iRent",
+  "text": "Naitala ang refund
+
+Hi Cai Santos, nagtala ang may-ari ng refund na ₱400.00 mula sa iyong credit.
+
+Halaga: ₱400.00
+Paraan: GCash
+Petsa: Oktubre 20, 2026
+Reference no.: RF-1
+Credit balance ngayon: ₱0.00
+
+> Deposit settled
+
+--
+Ang email na ito ay mula sa iRent · BLDG-Q UDHO Community.",
+}
+`;
+
+exports[`email templates (B11, R48) > reminder.en renders (snapshot) and its subject contains "iRent" 1`] = `
+{
+  "subject": "Reminder: October 2026 rent due February 28, 2027 — iRent",
+  "text": "Payment reminder
+
+Hi Ana Cruz, your October 2026 rent is due in 3 days, on February 28, 2027.
+
+For: October 2026 rent
+Amount to pay: ₱4,500.00
+Due date: February 28, 2027
+
+Pay now: http://localhost:5173/portal/pay
+
+If you already paid, you can ignore this reminder.
+
+--
+This email was sent by iRent · BLDG-Q UDHO Community.",
+}
+`;
+
+exports[`email templates (B11, R48) > reminder.fil renders (snapshot) and its subject contains "iRent" 1`] = `
+{
+  "subject": "Paalala: upa para sa Oktubre 2026, takdang araw Pebrero 28, 2027 — iRent",
+  "text": "Paalala sa bayad
+
+Hi Ana Cruz, ang iyong upa para sa Oktubre 2026 ay dapat bayaran sa loob ng 3 araw, sa Pebrero 28, 2027.
+
+Para sa: upa para sa Oktubre 2026
+Halagang babayaran: ₱4,500.00
+Takdang araw: Pebrero 28, 2027
+
+Magbayad ngayon: http://localhost:5173/portal/pay
+
+Kung nakapagbayad ka na, balewalain lang ang paalalang ito.
+
+--
+Ang email na ito ay mula sa iRent · BLDG-Q UDHO Community.",
+}
+`;

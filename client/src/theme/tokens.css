@@ -1,0 +1,297 @@
+/*
+ * iRent design tokens. Source: DESIGN.md → "Build direction (2026-10): Open house".
+ *
+ * Black and white, photo-led, with the logo's orange as the only accent (logo mark, count badges, unread
+ * marks, the "beds available" dot, the focus ring). Ink is a neutral near-black; primary actions are ink
+ * pills in Light and white pills in Dark. Large radii. Every text/background pair is checked by
+ * src/theme/tokens.test.ts (WCAG 2.1 AA).
+ *
+ * - Primitives: `--gray-950`, `--orange-500`.
+ * - Semantic colour tokens are `--color-<role>`: Light on :root, Dark on .dark.
+ * Tailwind (tailwind.config.js) maps its colour utilities to these variables only.
+ */
+:root {
+  /* ---------- Primitives: orange (logo) ---------- */
+  --orange-50: #fff7ed;
+  --orange-100: #feebd0;
+  --orange-200: #fcd49f;
+  --orange-300: #f9b85e;
+  --orange-400: #f7a330;
+  --orange-500: #f4900a; /* logo bright: fills with dark text, or decoration */
+  --orange-600: #c87605; /* logo dark */
+  --orange-700: #a35e04; /* readable orange: focus ring, unread marks */
+  --orange-800: #834b08;
+  --orange-900: #6a3d0b;
+  --orange-950: #3a1f04;
+
+  /* ---------- Primitives: gray (neutral) ---------- */
+  --gray-0: #ffffff;
+  --gray-50: #f5f5f4;
+  --gray-100: #ececea;
+  --gray-200: #dddddb;
+  --gray-300: #c6c6c3;
+  --gray-400: #9b9b97;
+  --gray-500: #6c6c68;
+  --gray-600: #52524f;
+  --gray-700: #3c3c3a;
+  --gray-800: #272726;
+  --gray-900: #1a1a19;
+  --gray-950: #111110;
+
+  /* ---------- Primitives: status scales ---------- */
+  --green-100: #dcfce7;
+  --green-300: #86efac;
+  --green-400: #4ade80;
+  --green-700: #15803d;
+  --green-800: #166534;
+  --green-950: #052e16;
+  --red-100: #fee2e2;
+  --red-300: #fca5a5;
+  --red-400: #f87171;
+  --red-700: #b91c1c;
+  --red-800: #991b1b;
+  --red-950: #450a0a;
+  --blue-100: #dbeafe;
+  --blue-300: #93c5fd;
+  --blue-800: #1e40af;
+  --blue-950: #172554;
+  --amber-100: #fef3c7;
+  --amber-300: #fcd34d;
+  --amber-800: #92400e;
+  --amber-950: #451a03;
+
+  --alpha-scrim: rgba(17, 17, 16, 0.6);
+
+  /* ---------- Semantic colour: Light ---------- */
+  --color-bg-page: var(--gray-50);
+  --color-bg-surface: var(--gray-0);
+  --color-bg-muted: var(--gray-100);
+  --color-bg-brand-subtle: var(--gray-100);
+  --color-bg-brand-strong: var(--gray-950);
+  --color-bg-scrim: var(--alpha-scrim);
+  --color-bg-logo-tile: var(--gray-0); /* OQ-14 = B: the logo sits on white in both themes */
+
+  --color-text-primary: var(--gray-950);
+  --color-text-secondary: var(--gray-600);
+  --color-text-tertiary: var(--gray-500);
+  --color-text-brand: var(--gray-950); /* links and active states are ink; orange is never body text */
+  --color-text-on-brand: var(--gray-0);
+  --color-text-on-accent: var(--gray-950);
+  --color-text-on-brand-strong: var(--gray-0);
+  --color-text-danger: var(--red-700);
+  --color-text-success: var(--green-700);
+  --color-text-on-danger: var(--gray-0);
+
+  --color-action-primary: var(--gray-950);
+  --color-action-primary-hover: var(--gray-700);
+  --color-action-accent: var(--orange-500);
+  --color-action-accent-hover: var(--orange-400);
+  --color-action-secondary: var(--gray-0);
+  --color-action-secondary-hover: var(--gray-100);
+  --color-action-danger: var(--red-700);
+  --color-action-danger-hover: var(--red-800);
+
+  --color-border-default: var(--gray-200); /* dividers, card edges (decorative) */
+  --color-border-strong: var(--gray-500); /* input borders: >= 3:1 on surface */
+  --color-border-focus: var(--orange-700); /* the orange focus ring, >= 3:1 on page, surface and muted */
+  --color-border-brand: var(--gray-950);
+  --color-border-danger: var(--red-700);
+  --color-mark: var(--orange-700); /* unread dots and small state marks (>= 3:1 non-text) */
+
+  --color-status-brand-bg: var(--orange-100);
+  --color-status-brand-fg: var(--orange-800);
+  --color-status-warning-bg: var(--amber-100);
+  --color-status-warning-fg: var(--amber-800);
+  --color-status-success-bg: var(--green-100);
+  --color-status-success-fg: var(--green-800);
+  --color-status-danger-bg: var(--red-100);
+  --color-status-danger-fg: var(--red-800);
+  --color-status-info-bg: var(--blue-100);
+  --color-status-info-fg: var(--blue-800);
+  --color-status-neutral-bg: var(--gray-100);
+  --color-status-neutral-fg: var(--gray-700);
+
+  /* Charts (admin dashboard): monochrome, >= 3:1 on surface; series are told apart by lightness + legend/labels. */
+  --color-chart-1: var(--gray-800);
+  --color-chart-2: var(--gray-500);
+  --color-chart-track: var(--gray-100);
+
+  /* Photo hero scrim (see .hero-on-photo below): ink, at least 0.72 under any text. */
+  --hero-scrim-rgb: 17, 17, 16;
+  --hero-scrim-text: 0.72;
+  --hero-scrim-fade: 0.3;
+
+  /* ---------- Spacing ---------- */
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  /* ---------- Radius: large and soft; buttons, badges and chips are pills ---------- */
+  --radius-none: 0px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+  --radius-full: 999px;
+
+  /* ---------- Size ---------- */
+  --size-control-sm: 36px;
+  --size-control-md: 44px; /* NFR4 minimum touch target */
+  --size-control-lg: 52px;
+  --size-icon-sm: 16px;
+  --size-icon-md: 20px;
+  --size-icon-lg: 24px;
+  --size-avatar-sm: 32px;
+  --size-avatar-md: 40px;
+  --size-avatar-lg: 56px;
+  --border-thin: 1px;
+  --border-thick: 2px;
+
+  /* ---------- Typography: one grotesk (Hanken Grotesk, has ₱) ---------- */
+  --font-heading: 'Hanken Grotesk Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Hanken Grotesk Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* ---------- Elevation: flat cards; shadows only for things that float ---------- */
+  --elevation-1: 0 1px 0 rgba(17, 17, 16, 0.04);
+  --elevation-2: 0 12px 28px -10px rgba(17, 17, 16, 0.18), 0 2px 6px rgba(17, 17, 16, 0.06);
+  --elevation-3: 0 30px 60px -18px rgba(17, 17, 16, 0.32), 0 4px 10px rgba(17, 17, 16, 0.08);
+
+  /* ---------- Motion ---------- */
+  --duration-modal: 220ms;
+  --duration-fast: 150ms;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* ---------- Semantic colour: Dark ---------- */
+.dark {
+  --color-bg-page: var(--gray-950);
+  --color-bg-surface: var(--gray-900);
+  --color-bg-muted: var(--gray-800);
+  --color-bg-brand-subtle: var(--gray-800);
+  --color-bg-brand-strong: var(--gray-800);
+  --color-bg-scrim: var(--alpha-scrim);
+  --color-bg-logo-tile: var(--gray-0); /* OQ-14 = B */
+
+  --color-text-primary: var(--gray-50);
+  --color-text-secondary: var(--gray-400);
+  --color-text-tertiary: var(--gray-400);
+  --color-text-brand: var(--gray-50);
+  --color-text-on-brand: var(--gray-950);
+  --color-text-on-accent: var(--gray-950);
+  --color-text-on-brand-strong: var(--gray-0);
+  --color-text-danger: var(--red-300);
+  --color-text-success: var(--green-300);
+  --color-text-on-danger: var(--gray-950);
+
+  --color-action-primary: var(--gray-50);
+  --color-action-primary-hover: var(--gray-300);
+  --color-action-accent: var(--orange-500);
+  --color-action-accent-hover: var(--orange-400);
+  --color-action-secondary: var(--gray-900);
+  --color-action-secondary-hover: var(--gray-800);
+  --color-action-danger: var(--red-400);
+  --color-action-danger-hover: var(--red-300);
+
+  --color-border-default: var(--gray-800);
+  --color-border-strong: var(--gray-500);
+  --color-border-focus: var(--orange-400);
+  --color-border-brand: var(--gray-50);
+  --color-border-danger: var(--red-400);
+  --color-mark: var(--orange-400);
+
+  --color-status-brand-bg: var(--orange-950);
+  --color-status-brand-fg: var(--orange-300);
+  --color-status-warning-bg: var(--amber-950);
+  --color-status-warning-fg: var(--amber-300);
+  --color-status-success-bg: var(--green-950);
+  --color-status-success-fg: var(--green-300);
+  --color-status-danger-bg: var(--red-950);
+  --color-status-danger-fg: var(--red-300);
+  --color-status-info-bg: var(--blue-950);
+  --color-status-info-fg: var(--blue-300);
+  --color-status-neutral-bg: var(--gray-800);
+  --color-status-neutral-fg: var(--gray-300);
+
+  --color-chart-1: var(--gray-100);
+  --color-chart-2: var(--gray-500);
+  --color-chart-track: var(--gray-800);
+
+  --elevation-1: 0 1px 0 rgba(0, 0, 0, 0.3);
+  --elevation-2: 0 12px 28px -10px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.4);
+  --elevation-3: 0 30px 60px -18px rgba(0, 0, 0, 0.75), 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/*
+ * Placeholder photos (lib/placeholderImage: inline SVG data URIs, light grey) are dimmed in Dark so they
+ * don't glare. Real photos are URLs and are untouched.
+ */
+.dark img[src^='data:image/svg+xml'] {
+  filter: brightness(0.42) contrast(1.05);
+}
+
+/*
+ * Public site "crisp" scope (DESIGN.md → Build direction, 2026-10-14, after the Eastute reference): flat light-gray
+ * page, near-square corners, dark-gray equivalent in Dark. Applied by PublicLayout only; the app keeps the defaults.
+ * tokens.test.ts checks AA for these overrides.
+ */
+.site-crisp {
+  --color-bg-page: var(--gray-100);
+  --color-bg-muted: var(--gray-200);
+  --color-text-tertiary: var(--gray-600);
+  --radius-sm: 0px;
+  --radius-md: 2px;
+  --radius-lg: 2px;
+  --radius-xl: 4px;
+  --radius-2xl: 4px;
+}
+
+.dark .site-crisp {
+  --color-bg-page: var(--gray-900);
+  --color-bg-surface: var(--gray-800);
+  --color-bg-muted: var(--gray-700);
+  --color-border-default: var(--gray-700);
+  --color-border-strong: var(--gray-400);
+  --color-text-secondary: var(--gray-300);
+  --color-text-tertiary: var(--gray-300);
+}
+
+/*
+ * Photo hero (2026-10-14): the house photo fills the hero under an ink scrim in both themes, so text on it is always
+ * light. Under any text the scrim is at least --hero-scrim-text (0.72): white text, gray-200 subtext, the orange-400
+ * stats and the orange focus ring stay AA even over a pure-white pixel (tokens.test.ts checks the worst case).
+ * The scope swaps the tokens the hero uses, so the square CTA turns white with ink text.
+ */
+.hero-on-photo {
+  --color-text-primary: var(--gray-0);
+  --color-text-secondary: var(--gray-200);
+  --color-mark: var(--orange-400);
+  --color-border-focus: var(--orange-400);
+  --color-action-primary: var(--gray-0);
+  --color-action-primary-hover: var(--gray-200);
+  --color-text-on-brand: var(--gray-950);
+}
+
+/* The scrim layer: uniform on phones (text spans the width); from lg darkest behind the text, fading to the right. */
+.hero-scrim {
+  background: rgba(var(--hero-scrim-rgb), var(--hero-scrim-text));
+}
+@media (min-width: 1024px) {
+  .hero-scrim {
+    background: linear-gradient(
+      90deg,
+      rgba(var(--hero-scrim-rgb), 0.82) 0%,
+      rgba(var(--hero-scrim-rgb), var(--hero-scrim-text)) 60%,
+      rgba(var(--hero-scrim-rgb), var(--hero-scrim-fade)) 100%
+    );
+  }
+}

@@ -1,0 +1,74 @@
+# Claude Code local settings and agent state
+.claude/
+.docs/
+
+# Project docs (plan, spec, design handoff, task lists) — kept local only
+docs/
+# Dependencies
+node_modules/
+
+# Environment files (real values never go in git; see server/.env.example)
+.env
+.env.*
+!.env.example
+!.env.mocks
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+id_rsa*
+id_ed25519*
+*.keystore
+*.jks
+credentials*.json
+service-account*.json
+secrets.*
+*.secret
+.npmrc
+.pypirc
+.netrc
+
+# Emails captured by the log transport (EMAIL_TRANSPORT=log)
+server/.mail/
+
+# Test and build output
+coverage/
+dist/
+build/
+test-results/
+playwright-report/
+playwright/.cache/
+*.tsbuildinfo
+.vite/
+.eslintcache
+
+# Supabase CLI local state
+supabase/.temp/
+supabase/.branches/
+.supabase/
+.vercel/
+.netlify/
+.firebase/
+.terraform/
+*.tfstate
+*.tfstate.*
+.aws/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.sql.gz
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/*
+!.vscode/extensions.json

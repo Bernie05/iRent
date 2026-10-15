@@ -1,0 +1,47 @@
+# Dependencies and generated output
+node_modules/
+coverage/
+dist/
+build/
+*.tsbuildinfo
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+id_rsa*
+id_ed25519*
+*.keystore
+*.jks
+credentials*.json
+service-account*.json
+secrets.*
+*.secret
+.npmrc
+.pypirc
+.netrc
+
+# Local data, logs, and email captures
+.mail/
+logs/
+*.log
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.sql.gz
+
+# Local tool configuration
+.vercel/
+.netlify/
+.firebase/
+.supabase/
+.terraform/
+*.tfstate
+*.tfstate.*
+.aws/

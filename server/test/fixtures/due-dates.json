@@ -1,0 +1,28 @@
+{
+  "description": "BR-8 due-date vectors: due_date = (period year, period month, min(day(move_in), last day of period month)). Shared by the JS dueDateFor (B2) and the SQL due_date_for (B8, RK16).",
+  "vectors": [
+    { "move_in": "2027-01-31", "period": "2027-01-01", "expected": "2027-01-31", "note": "first charge is the move-in month itself" },
+    { "move_in": "2027-01-31", "period": "2027-02-01", "expected": "2027-02-28", "note": "31st clamps to Feb 28 in a normal year" },
+    { "move_in": "2027-01-31", "period": "2027-03-01", "expected": "2027-03-31", "note": "no drift after February" },
+    { "move_in": "2027-01-31", "period": "2027-04-01", "expected": "2027-04-30" },
+    { "move_in": "2027-01-31", "period": "2027-06-01", "expected": "2027-06-30" },
+    { "move_in": "2027-01-31", "period": "2027-09-01", "expected": "2027-09-30" },
+    { "move_in": "2027-01-31", "period": "2027-11-01", "expected": "2027-11-30" },
+    { "move_in": "2027-01-31", "period": "2027-12-01", "expected": "2027-12-31" },
+    { "move_in": "2027-01-31", "period": "2028-02-01", "expected": "2028-02-29", "note": "leap year" },
+    { "move_in": "2026-01-29", "period": "2027-02-01", "expected": "2027-02-28", "note": "29th in a non-leap February" },
+    { "move_in": "2026-01-29", "period": "2028-02-01", "expected": "2028-02-29" },
+    { "move_in": "2026-01-29", "period": "2027-03-01", "expected": "2027-03-29" },
+    { "move_in": "2026-01-30", "period": "2027-02-01", "expected": "2027-02-28", "note": "30th in February" },
+    { "move_in": "2026-01-30", "period": "2028-02-01", "expected": "2028-02-29" },
+    { "move_in": "2026-01-30", "period": "2027-04-01", "expected": "2027-04-30" },
+    { "move_in": "2026-01-30", "period": "2027-05-01", "expected": "2027-05-30" },
+    { "move_in": "2026-10-15", "period": "2026-10-01", "expected": "2026-10-15", "note": "E27 mid-month move-in" },
+    { "move_in": "2026-10-15", "period": "2026-11-01", "expected": "2026-11-15" },
+    { "move_in": "2026-10-20", "period": "2026-10-01", "expected": "2026-10-20", "note": "E26 / SC-57" },
+    { "move_in": "2026-09-05", "period": "2026-10-01", "expected": "2026-10-05" },
+    { "move_in": "2026-09-01", "period": "2026-12-01", "expected": "2026-12-01" },
+    { "move_in": "2099-12-31", "period": "2100-02-01", "expected": "2100-02-28", "note": "century year is not leap" },
+    { "move_in": "1999-12-31", "period": "2000-02-01", "expected": "2000-02-29", "note": "400-year rule leap" }
+  ]
+}

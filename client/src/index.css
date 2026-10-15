@@ -1,0 +1,79 @@
+/* Font (self-hosted, font-display swap): Hanken Grotesk variable, weights 100-900; has the peso sign (U+20B1). */
+@import '@fontsource-variable/hanken-grotesk/wght.css';
+@import './theme/tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    background-color: var(--color-bg-page);
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    accent-color: var(--color-action-primary); /* native checkboxes, radios, date pickers */
+    caret-color: var(--color-text-brand);
+  }
+
+  ::selection {
+    background-color: var(--orange-200);
+    color: var(--gray-950);
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  body {
+    min-height: 100dvh;
+    background-color: var(--color-bg-page);
+    color: var(--color-text-primary);
+  }
+
+  /* NFR4: a visible focus ring on every focusable element (≥ 3:1 against the surface). */
+  :focus-visible {
+    outline: var(--border-thick) solid var(--color-border-focus);
+    outline-offset: 2px;
+  }
+
+  /* Smooth in-page anchor scrolling (public navbar), only when motion is welcome. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  /* NFR4: honour reduced motion globally; components also read useReducedMotion(). */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Subtle scrollbar for in-card scroll areas (dashboard); follows the theme's border colour in Light and Dark. */
+.scroll-subtle {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+.scroll-subtle::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scroll-subtle::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: 999px;
+}
+.scroll-subtle::-webkit-scrollbar-track {
+  background: transparent;
+}

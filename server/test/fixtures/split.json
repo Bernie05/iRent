@@ -1,0 +1,28 @@
+{
+  "description": "BR-5 equal-split vectors in centavos. share = floor(total / n); the leftover centavos go one each to the first shares (ordered by tenancy move_in, then id). Shared by the server equalSplit (B2) and the client split preview (F19).",
+  "vectors": [
+    { "total": 100000, "n": 3, "expected": [33334, 33333, 33333], "note": "SC-39: ₱1,000.00 → 333.34 / 333.33 / 333.33" },
+    { "total": 100000, "n": 1, "expected": [100000] },
+    { "total": 100000, "n": 4, "expected": [25000, 25000, 25000, 25000] },
+    { "total": 100001, "n": 2, "expected": [50001, 50000] },
+    { "total": 85000, "n": 3, "expected": [28334, 28333, 28333] },
+    { "total": 100, "n": 6, "expected": [17, 17, 17, 17, 16, 16] },
+    { "total": 1, "n": 3, "expected": [1, 0, 0] },
+    { "total": 0, "n": 2, "expected": [0, 0] },
+    { "total": 100000000, "n": 7, "expected": [14285715, 14285715, 14285714, 14285714, 14285714, 14285714, 14285714] }
+  ],
+  "ordering": {
+    "total": 100000,
+    "tenancies": [
+      { "id": "c0000000-0000-4000-8000-000000000003", "move_in": "2026-09-05" },
+      { "id": "b0000000-0000-4000-8000-000000000002", "move_in": "2026-08-10" },
+      { "id": "a0000000-0000-4000-8000-000000000001", "move_in": "2026-09-05" }
+    ],
+    "expected": [
+      { "tenancy_id": "b0000000-0000-4000-8000-000000000002", "amount": 33334 },
+      { "tenancy_id": "a0000000-0000-4000-8000-000000000001", "amount": 33333 },
+      { "tenancy_id": "c0000000-0000-4000-8000-000000000003", "amount": 33333 }
+    ],
+    "note": "earliest move-in first; same move-in ordered by id"
+  }
+}
